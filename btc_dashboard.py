@@ -20,14 +20,13 @@ cg = CoinGeckoAPI()
 # ---------------------------
 # 2. Helper Functions
 # ---------------------------
-
-
 def get_crypto_history(coin_id, vs_currency='usd', days=180):
     vs_currency = vs_currency.lower()
     supported = cg.get_supported_vs_currencies()
     if vs_currency not in supported:
         raise ValueError(
-            f"Invalid vs_currency: '{vs_currency}'. Supported currencies: {supported[:10]} ...")
+            f"Invalid vs_currency: '{vs_currency}'. Supported currencies: {supported[:10]} ..."
+        )
 
     data = cg.get_coin_market_chart_by_id(
         id=coin_id, vs_currency=vs_currency, days=days
@@ -37,12 +36,10 @@ def get_crypto_history(coin_id, vs_currency='usd', days=180):
     df.set_index('timestamp', inplace=True)
     return df
 
-
 def get_macro_data(ticker, start_date, end_date):
     df = yf.download(ticker, start=start_date, end=end_date)["Close"]
     df = df.to_frame(name=ticker)
     return df
-
 
 def get_fear_greed_index():
     url = "https://api.alternative.me/fng/?limit=180"
@@ -53,7 +50,6 @@ def get_fear_greed_index():
     df.set_index('timestamp', inplace=True)
     df['value'] = df['value'].astype(float)
     return df[['value']]
-
 
 # ---------------------------
 # 3. Fetch Data
@@ -89,8 +85,7 @@ st.dataframe(corr_matrix.style.background_gradient(cmap='coolwarm'))
 # ---------------------------
 # 5. Feature Selection
 # ---------------------------
-top_features = corr_matrix['BTC'][abs(
-    corr_matrix['BTC']) > 0.3].index.drop('BTC')
+top_features = corr_matrix['BTC'][abs(corr_matrix['BTC']) > 0.3].index.drop('BTC')
 X = df[top_features]
 y = df['BTC']
 
